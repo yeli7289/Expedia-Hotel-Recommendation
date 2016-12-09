@@ -7,21 +7,25 @@ import numpy as np
 from collections import defaultdict
 from MapScore import MapScore
 
-train = pd.read_csv('Data/small_train.csv',dtype={'is_booking':bool,'srch_destination_id':np.int32, 'hotel_cluster':np.int32},\
-	usecols=['srch_destination_id','is_booking','hotel_cluster'])
-test = pd.read_csv('Data/small_test.csv',dtype={'is_booking':bool,'srch_destination_id':np.int32, 'hotel_cluster':np.int32},\
-	usecols=['srch_destination_id','is_booking','hotel_cluster'])
+train = pd.read_csv('Data/small_train.csv',dtype={'is_booking':bool,'srch_destination_id':np.int32, 'hotel_market':np.int32, 'hotel_cluster':np.int32},\
+	usecols=['srch_destination_id','is_booking','hotel_market','hotel_cluster'])
+test = pd.read_csv('Data/small_test.csv',dtype={'is_booking':bool,'srch_destination_id':np.int32, 'hotel_market':np.int32, 'hotel_cluster':np.int32},\
+	usecols=['srch_destination_id','is_booking','hotel_market','hotel_cluster'])
 
 MAP = MapScore()
 weight = 0.05
+target_feature = "hotel_market"
+
 dic_srchid = defaultdict(lambda: defaultdict(int))
 dic_srchid_result = defaultdict(list)
 most_pop = list(train["hotel_cluster"].value_counts()[:5].index)
+
 for index, row in train.iterrows():
 	if row["is_booking"]:
-		dic_srchid[row["srch_destination_id"]][row["hotel_cluster"]]+=1
+		dic_srchid[row[target_feature]][row["hotel_cluster"]]+=1
 	else:
-		dic_srchid[row["srch_destination_id"]][row["hotel_cluster"]]+=weight
+		dic_srchid[row[target_feature]][row["hotel_cluster"]]+=weight
+
 for key, value in dic_srchid.iteritems():
 	n = len(value)
 	if n>=5:
@@ -31,8 +35,8 @@ for key, value in dic_srchid.iteritems():
 print "finished encoding"
 
 for index, row in test.iterrows():
-	if row["srch_destination_id"] in dic_srchid_result:
-		predict = dic_srchid_result[row["srch_destination_id"]]
+	if row[target_feature] in dic_srchid_result:
+		predict = dic_srchid_result[row[target_feature]]
 	else:
 		predict = most_pop
 	MAP.update_score(row["hotel_cluster"], predict)

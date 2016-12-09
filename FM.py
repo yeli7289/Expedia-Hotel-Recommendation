@@ -4,6 +4,7 @@ from sklearn.preprocessing import OneHotEncoder
 from fastFM import als
 from numpy import array
 import csv
+from MapScore import MapScore
 def OneHotGenerate(data):
 	enc = OneHotEncoder()
 	enc.fit(data)
@@ -42,9 +43,18 @@ for tst_sample in x_test:
 output = pd.DataFrame(tst_matrix)
 output.to_csv('Data/FM_matrix.csv',index=False)
 
-# with open("Data/output.csv", "wb") as f:
-#     writer = csv.writer(f)
-#     writer.writerows(tst_matrix)
+# target = pd.read_csv('Data/small_test.csv', usecols=['hotel_cluster'])
+# target = target['hotel_cluster'].values.tolist()
+# Map = MapScore()
+# with open("Data/FM_matrix.csv", 'rb') as f:
+# 	reader = csv.reader(f)
+# 	for i, row in enumerate(reader):
+# 		if i==0:
+# 			continue
+# 		row = map(float, row)
+# 		predict = sorted(row, reverse=True)[:5]
+# 		Map.update_score(target[i-1],[row.index(p) for p in predict])
+# print Map.output_score()
 
 
 
