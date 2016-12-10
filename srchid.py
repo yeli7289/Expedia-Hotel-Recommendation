@@ -7,18 +7,18 @@ import numpy as np
 from collections import defaultdict
 from MapScore import MapScore
 
-train = pd.read_csv('Data/small_train.csv',dtype={'is_booking':bool,'srch_destination_id':np.int32, 'hotel_market':np.int32, 'hotel_cluster':np.int32},\
-	usecols=['srch_destination_id','is_booking','hotel_market','hotel_cluster'])
-test = pd.read_csv('Data/small_test.csv',dtype={'is_booking':bool,'srch_destination_id':np.int32, 'hotel_market':np.int32, 'hotel_cluster':np.int32},\
-	usecols=['srch_destination_id','is_booking','hotel_market','hotel_cluster'])
+train = pd.read_csv('Data/small_train.csv',dtype={'is_booking':bool,'srch_destination_id':np.int32, 'hotel_market':np.int32, 'hotel_cluster':np.int32,'hotel_country':np.int32,'user_location_country':np.int32,'user_location_region':np.int32},\
+	usecols=['srch_destination_id','is_booking','hotel_market','hotel_cluster','hotel_country','user_location_country','user_location_region'])
+test = pd.read_csv('Data/small_test.csv',dtype={'is_booking':bool,'srch_destination_id':np.int32, 'hotel_market':np.int32, 'hotel_cluster':np.int32, 'hotel_country':np.int32,'user_location_country':np.int32,'user_location_region':np.int32},\
+	usecols=['srch_destination_id','is_booking','hotel_market','hotel_cluster','hotel_country','user_location_country','user_location_region'])
 
 MAP = MapScore()
 weight = 0.05
-target_feature = "hotel_market"
+target_feature = "user_location_region"
 
 dic_srchid = defaultdict(lambda: defaultdict(int))
 dic_srchid_result = defaultdict(list)
-most_pop = list(train["hotel_cluster"].value_counts()[:5].index)
+most_pop = list(train[target_feature].value_counts()[:5].index)
 
 for index, row in train.iterrows():
 	if row["is_booking"]:
